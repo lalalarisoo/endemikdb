@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'pages/splash_screen.dart';
-import 'pages/home_page.dart';
-import 'pages/favorit_page.dart';
+import 'providers/favorite_provider.dart';
 
 void main() {
-  runApp(const EndemikApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+      ],
+      child: const EndemikApp(),
+    ),
+  );
 }
 
 class EndemikApp extends StatelessWidget {
@@ -16,10 +23,6 @@ class EndemikApp extends StatelessWidget {
       title: 'Endemik Indonesia',
       theme: ThemeData(primarySwatch: Colors.green),
       home: const SplashScreen(),
-      routes: {
-        '/home': (_) => const HomePage(),
-        '/favorit': (_) => const FavoritPage(),
-      },
     );
   }
 }

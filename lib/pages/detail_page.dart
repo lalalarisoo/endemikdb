@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../model/endemik.dart';
 import '../helper/database_helper.dart';
+import 'package:provider/provider.dart';
+import '../providers/favorite_provider.dart';
+
 
 class DetailPage extends StatefulWidget {
   final Endemik item;
@@ -29,16 +32,22 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final favProvider = Provider.of<FavoriteProvider>(context);
+    final isFav = favProvider.isFavorite(currentItem);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(currentItem.nama),
         actions: [
           IconButton(
-            icon: Icon(
-              currentItem.is_favorit == "true" ? Icons.favorite : Icons.favorite_border,
-              color: Colors.red,
-            ),
-            onPressed: toggleFavorit,
+            icon: Icon(isFav ? Icons.favorite : Icons.favorite_border, color: Colors.red),
+            onPressed: () {
+              if (isFav) {
+                favProvider.removeFavorite(currentItem);
+              } else {
+                favProvider.addFavorite(currentItem);
+              }
+            },
           )
         ],
       ),

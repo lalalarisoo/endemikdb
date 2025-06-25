@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../model/endemik.dart';
 import '../service/endemik_service.dart';
 import '../widget/endemik_card.dart';
+import 'package:provider/provider.dart';
+import '../providers/favorite_provider.dart';
+
 
 class FavoritPage extends StatefulWidget {
   const FavoritPage({super.key});
@@ -30,15 +33,15 @@ class _FavoritPageState extends State<FavoritPage> {
 
   @override
   Widget build(BuildContext context) {
+    final favorites = context.watch<FavoriteProvider>().favorites;
+
     return Scaffold(
       appBar: AppBar(title: const Text("Favorit")),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : favorit.isEmpty
+      body: favorites.isEmpty
           ? const Center(child: Text("Belum ada favorit"))
           : ListView.builder(
-        itemCount: favorit.length,
-        itemBuilder: (_, i) => EndemikCard(favorit[i]),
+        itemCount: favorites.length,
+        itemBuilder: (_, i) => EndemikCard(favorites[i]),
       ),
     );
   }
