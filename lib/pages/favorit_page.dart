@@ -5,7 +5,6 @@ import '../widget/endemik_card.dart';
 import 'package:provider/provider.dart';
 import '../providers/favorite_provider.dart';
 
-
 class FavoritPage extends StatefulWidget {
   const FavoritPage({super.key});
 
@@ -37,11 +36,37 @@ class _FavoritPageState extends State<FavoritPage> {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Favorit")),
-      body: favorites.isEmpty
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : favorites.isEmpty
           ? const Center(child: Text("Belum ada favorit"))
           : ListView.builder(
         itemCount: favorites.length,
-        itemBuilder: (_, i) => EndemikCard(favorites[i]),
+        itemBuilder: (_, i) {
+          final item = favorites[i];
+          return Stack(
+            children: [
+              EndemikCard(item),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () {
+                    Provider.of<FavoriteProvider>(context, listen: false)
+                        .removeFavorite(item);
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('${item.nama} dihapus dari favorit'),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

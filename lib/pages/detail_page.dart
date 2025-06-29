@@ -3,6 +3,9 @@ import '../model/endemik.dart';
 import '../helper/database_helper.dart';
 import 'package:provider/provider.dart';
 import '../providers/favorite_provider.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
+
 
 
 class DetailPage extends StatefulWidget {
@@ -55,7 +58,15 @@ class _DetailPageState extends State<DetailPage> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            Image.network(currentItem.foto, height: 200, fit: BoxFit.cover),
+            SizedBox(
+              height: 300,
+              child: ClipRect(
+                child: PhotoView(
+                  imageProvider: NetworkImage(currentItem.foto),
+                  backgroundDecoration: const BoxDecoration(color: Colors.white),
+                ),
+              ),
+            ),
             const SizedBox(height: 16),
             Text(currentItem.nama, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             Text(currentItem.nama_latin, style: const TextStyle(fontSize: 18, fontStyle: FontStyle.italic)),
