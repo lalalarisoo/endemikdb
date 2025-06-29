@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../model/endemik.dart';
 import '../service/endemik_service.dart';
 import 'detail_page.dart';
 import '../widget/endemik_card.dart';
+import '../providers/favorite_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,8 +30,9 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void goToFavorit() {
-    Navigator.pushNamed(context, '/favorit');
+  void goToFavorit() async {
+    await Navigator.pushNamed(context, '/favorit');
+    setState(() {}); // refresh state ketika kembali dari favorit
   }
 
   @override
@@ -46,10 +49,18 @@ class _HomePageState extends State<HomePage> {
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-        itemCount: data.length,
-        itemBuilder: (_, i) => EndemikCard(data[i]),
-      ),
+          : Consumer<FavoriteProvider>(
+              builder: (context, favProvider, _) {
+                return ListView.builder(
+                  itemCount: data.length,
+                  itemBuilder: (_, i) {
+                    final item = data[i];
+                    final isFav = favProvider.isFavorite(item);
+                    return EndemikCard(item, isFavorite: isFav);
+                  },
+                );
+              },
+            ),
     );
   }
 }
